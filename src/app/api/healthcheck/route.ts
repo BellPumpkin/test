@@ -8,7 +8,7 @@ export async function GET() {
     const isConnected = mongoose.connection.readyState === 1;
 
     return NextResponse.json({ status: isConnected ? "✅ 연결됨" : "❌ 연결되지 않음" });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "❌ MongoDB 연결 실패" }, { status: 500 });
   }
 }
