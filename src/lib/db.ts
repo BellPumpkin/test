@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 const client = new MongoClient(process.env.MONGODB_URI as string);
 
@@ -28,4 +28,15 @@ export async function deleteBook(id: string) {
   const collection = client.db("test").collection("test");
   await collection.deleteOne({id: parseInt(id)});
   return { message: '책이 성공적으로 삭제되었습니다.' };
+}
+
+export async function updateBook({ id, title, content, author, price, count }:{ id: string, title: string, content: string, author: string; price: number, count: number }) {
+  await client.connect();
+  const collection = client.db("test").collection("test");
+  const result = collection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { title, content, author, price, count } }
+  );
+
+  return { message: "책 정보가 성공적으로 수정되었습니다."}
 }
