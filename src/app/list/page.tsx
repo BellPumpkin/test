@@ -1,7 +1,7 @@
 "use client"
 import { useRouter } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation} from '@tanstack/react-query';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -19,11 +19,40 @@ const fetchBooks = async () => {
   return data;
 };
 
+const deleteBook = async (id: string) => {
+  const res = await fetch(`/api/books/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    throw new Error('책을 삭제하는 데 실패했습니다.');
+  }
+
+  return res.json();
+};
+
 export default function ListPage() {
   const router = useRouter();
   const { data, isLoading, isError } = useQuery({
     queryKey: ['books'],
     queryFn: fetchBooks,
+  });
+
+  const queryClient = useQueryClient();
+
+  // useMutation을 사용하여 삭제 함수 정의
+  const mutation = useMutation({
+    mutationFn: deleteBook, 
+    onSuccess: (data) => {
+      console.log('삭제 성공', data);
+      
+      queryClient.invalidateQueries({
+        queryKey: ['books'],
+      });
+    },
+    onError: (error) => {
+      console.error('삭제 실패:', error);
+    },
   });
 
   const [bookSearch, setBookSearch] = useState<string>('');
@@ -57,6 +86,10 @@ export default function ListPage() {
   const onClickedBookSearch = () => {
   };
 
+  const onClickDelete = (id: string) => {
+    mutation.mutate(id);
+  };
+
   return (
     <div className='flex flex-col items-center w-full h-full pt-[100px] gap-4'>
       <h1 className='flex text-4xl'>책 목록</h1>
@@ -83,12 +116,14 @@ export default function ListPage() {
         </thead>
         <tbody>
             {paginatedItems.map((item: Props) => (
-              <tr key={item.id} className='cursor-pointer' onClick={() => onClickDetail(item.id)}>
+              <tr key={item.id}>
                 <td className='border-2 text-center'>{item.id}</td>
-                <td className='border-2 pl-3'>{item.title}</td>
+                <td className='border-2 pl-3' onClick={() => onClickDetail(item.id)}>{item.title}</td>
                 <td className='border-2 text-center'>{item.author}</td>
                 <td className='border-2 text-center'>{item.price}</td>
                 <td className='border-2 text-center'>{item.count}</td>
+                <td className='border-2 text-center'><button onClick={() => { onClickDelete(String(item.id))
+                }}>x</button></td>
               </tr>
             ))}
         </tbody>
