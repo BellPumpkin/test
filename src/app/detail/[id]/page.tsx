@@ -22,15 +22,14 @@ export default function DetailPage({params}: Props) {
   const { id } = React.use(params);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('/MOCK_DATA.json');
-      const data = await response.json();
-      const test = data.filter((item: any) => (
-        item.id.toString() === id
-      ))
-      setCurrentBookDetail(test[0]);
+    const fetchBooks = async () => {
+      const res = await fetch(`/api/books/${id}`);
+      const data = await res.json();
+
+      setCurrentBookDetail(data);
     };
-    fetchData();
+
+    fetchBooks();
   }, [id]);
 
   return (

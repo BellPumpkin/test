@@ -19,3 +19,11 @@ export async function getBooks() {
     await client.close();
   }
 }
+
+
+export async function getBookDetail(id: string) {
+  await client.connect();
+  const collection = client.db("test").collection("test");
+  
+  return collection.findOne({ id: parseInt(id) });
+}
