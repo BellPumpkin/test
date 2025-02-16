@@ -10,16 +10,16 @@ export default function ListPage() {
   const [mockup, setMockup] = useState<any[]>([]);
   const [bookSearch, setBookSearch] = useState<string>('');
   const [authorSearch, setAuthorSearch] = useState<string>('');
-  // const [searchReset, setSearchReset] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('/MOCK_DATA.json');
-      const data = await response.json();
+    const fetchBooks = async () => {
+      const res = await fetch("/api/books");
+      const data = await res.json();
+
       setMockup(data);
     };
 
-    fetchData();
+    fetchBooks();
   }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
