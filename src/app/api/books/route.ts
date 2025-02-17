@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const book = await request.json();
 
     // 필수 값이 누락된 경우
-    if (!book.title || !book.author || !book.price) {
+    if (!book.title || !book.content || !book.author || !book.price) {
       return NextResponse.json(
         { error: "❌ 모든 필수 필드를 입력하세요." },
         { status: 400 }

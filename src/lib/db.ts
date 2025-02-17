@@ -5,14 +5,14 @@ const client = new MongoClient(process.env.MONGODB_URI as string);
 export async function getBooks() {
   await client.connect();
   const collection = client.db('test').collection('test');
-  return collection.find().toArray();
+  return collection.find().sort({ _id: -1 }).toArray();
 }
 
 export async function getBookDetail(id: string) {
   await client.connect();
   const collection = client.db("test").collection("test");
   
-  return collection.findOne({ id: parseInt(id) });
+  return collection.findOne({ _id: new ObjectId(id) });
 }
 
 export async function addBook(book: { id: number, title: string, content: string, author: string; price: number, count: number }) {
@@ -26,7 +26,7 @@ export async function addBook(book: { id: number, title: string, content: string
 export async function deleteBook(id: string) {
   await client.connect();
   const collection = client.db("test").collection("test");
-  await collection.deleteOne({id: parseInt(id)});
+  await collection.deleteOne({ _id: new ObjectId(id) });
   return { message: '책이 성공적으로 삭제되었습니다.' };
 }
 

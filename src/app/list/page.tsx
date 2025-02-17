@@ -6,6 +6,7 @@ import { useQuery, useQueryClient, useMutation} from '@tanstack/react-query';
 const ITEMS_PER_PAGE = 10;
 
 type Props = {
+  _id: string,
   id: number,
   title: string,
   author: string,
@@ -40,7 +41,6 @@ export default function ListPage() {
 
   const queryClient = useQueryClient();
 
-  // useMutation을 사용하여 삭제 함수 정의
   const mutation = useMutation({
     mutationFn: deleteBook, 
     onSuccess: (data) => {
@@ -79,11 +79,8 @@ export default function ListPage() {
     }
   };
 
-  const onClickDetail = (id: number) => {
+  const onClickDetail = (id: string) => {
     router.push(`/detail/${id}`);
-  };
-
-  const onClickedBookSearch = () => {
   };
 
   const onClickDelete = (id: string) => {
@@ -91,44 +88,49 @@ export default function ListPage() {
   };
 
   return (
-    <div className='flex flex-col items-center w-full h-full pt-[100px] gap-4'>
-      <h1 className='flex text-4xl'>책 목록</h1>
-      <div>
-        <span>제목</span>
-        <input
-          className='border-2'
-          type="text"
-          value={bookSearch}
-          onChange={(e) => setBookSearch(e.target.value)}
-          placeholder='책 제목을 입력해주세요.'
-        />
-        <button onClick={onClickedBookSearch}>검색</button>
+    <div className='flex flex-col p-10 w-[1000px] h-[700px] gap-4 border-1'>
+      <h1 className='flex justify-center text-5xl mb-10'>책 목록</h1>
+      <div className="flex justify-between">
+        <div className='text-2xl p-2'>
+          <span>제목: </span>
+          <input
+            className='ml-2 border-1 w-[400px]'
+            type="text"
+            value={bookSearch}
+            onChange={(e) => setBookSearch(e.target.value)}
+            placeholder='책 제목을 입력해주세요.'
+          />
+        </div>
+        <div>
+          <button className='border-1 text-2xl p-2' onClick={() => {
+            router.push(`/add`);
+          }}>책 추가</button>
+        </div>
       </div>
-      <table className='border-2'>
+      <table className='border-1'>
         <thead>
           <tr>
-            <th className='border-2 w-[100px]'>아이디</th>
-            <th className='border-2'>제목</th>
-            <th className='border-2 w-[100px]'>저자</th>
-            <th className='border-2 w-[100px]'>가격</th>
-            <th className='border-2 w-[50px]'>권 수</th>
+            <th className='border-1'>제목</th>
+            <th className='border-1 w-[150px]'>저자</th>
+            <th className='border-1 w-[120px]'>가격</th>
+            <th className='border-1 w-[100px]'>권 수</th>
+            <th className='border-1 w-[60px]'></th>
           </tr>
         </thead>
         <tbody>
             {paginatedItems.map((item: Props) => (
-              <tr key={item.id}>
-                <td className='border-2 text-center'>{item.id}</td>
-                <td className='border-2 pl-3' onClick={() => onClickDetail(item.id)}>{item.title}</td>
-                <td className='border-2 text-center'>{item.author}</td>
-                <td className='border-2 text-center'>{item.price}</td>
-                <td className='border-2 text-center'>{item.count}</td>
-                <td className='border-2 text-center'><button onClick={() => { onClickDelete(String(item.id))
+              <tr className='h-[40px]' key={item._id}>
+                <td className='border-1 pl-3' onClick={() => onClickDetail(item._id)}>{item.title}</td>
+                <td className='border-1 text-center'>{item.author}</td>
+                <td className='border-1 text-center'>{item.price.toLocaleString()}원</td>
+                <td className='border-1 text-center'>{item.count}</td>
+                <td className='border-1 text-center'><button onClick={() => { onClickDelete(item._id)
                 }}>x</button></td>
               </tr>
             ))}
         </tbody>
       </table>
-      <div className="flex gap-4">
+      <div className="flex justify-center gap-4">
         <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
           이전
         </button>

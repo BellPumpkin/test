@@ -28,8 +28,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   const id = (await params).id
   
   try {
-    // 데이터베이스에서 책을 삭제하는 로직 (예시)
-    const deletedBook = await deleteBook(id); // deleteBookFromDatabase는 데이터베이스에서 책을 삭제하는 함수입니다.
+    const deletedBook = await deleteBook(id);
 
     if (!deletedBook) {
       return NextResponse.json({ error: '책을 찾을 수 없습니다.' }, { status: 404 });
