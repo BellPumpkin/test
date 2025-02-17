@@ -33,7 +33,7 @@ export async function deleteBook(id: string) {
 export async function updateBook({ id, title, content, author, price, count }:{ id: string, title: string, content: string, author: string; price: number, count: number }) {
   await client.connect();
   const collection = client.db("test").collection("test");
-  const result = collection.updateOne(
+  collection.updateOne(
     { _id: new ObjectId(id) },
     { $set: { title, content, author, price, count } }
   );

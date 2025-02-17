@@ -25,7 +25,7 @@ const fetchBookDetail = async (id: string) => {
 export default function DetailPage({ params }: Props) {
   const { id } = React.use(params);
 
-  const { data, isLoading, isError, error } = useQuery<BookProps, Error>({
+  const { data } = useQuery<BookProps, Error>({
     queryKey: ['bookDetail', id],
     queryFn: () => fetchBookDetail(id),
   });

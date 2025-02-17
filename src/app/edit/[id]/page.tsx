@@ -37,7 +37,7 @@ const updateBook = async ({ _id, title, author, price, count }: { _id: string, t
 export default function EditPage({params}: Props) {
   const { id } = React.use(params);
 
-  const { data, isLoading, isError, error } = useQuery<BookProps, Error>({
+  const { data } = useQuery<BookProps, Error>({
     queryKey: ['bookDetail', id],
     queryFn: () => fetchBookDetail(id),
   });
@@ -62,6 +62,7 @@ export default function EditPage({params}: Props) {
 
   useEffect(() => {
     if (data) {
+      setInput_Id(data._id)
       setInputTitle(data.title);
       setInputContent(data.content);
       setInputAuthor(data.author);

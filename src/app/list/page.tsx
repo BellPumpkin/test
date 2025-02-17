@@ -33,7 +33,7 @@ const deleteBook = async (id: string) => {
 
 export default function ListPage() {
   const router = useRouter();
-  const { data, isLoading, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ['books'],
     queryFn: fetchBooks,
   });
