@@ -1,6 +1,7 @@
 "use client"
 import React from 'react'
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -26,13 +27,17 @@ const fetchBookDetail = async (id: string) => {
 
 export default function DetailPage({ params }: Props) {
   const { id } = React.use(params);
+  const router = useRouter();
 
   const { data } = useQuery<BookProps, Error>({
     queryKey: ['bookDetail', id],
     queryFn: () => fetchBookDetail(id),
   });
 
-  const truncateText = (text: string, maxLength: number) => {
+  const truncateText = (text: string | null | undefined, maxLength: number) => {
+    if (!text) {
+      return '';
+    }
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
@@ -44,6 +49,7 @@ export default function DetailPage({ params }: Props) {
     <div className="flex justify-center border-1">
       {data ? (
         <div className='flex w-[1000px] h-[700px] gap-2 p-10 justify-center'>
+          <div onClick={() => { router.push('/list') }}>{`목록으로`}</div>
           <div className='flex flex-2 justify-center items-center'>
             img
           </div>

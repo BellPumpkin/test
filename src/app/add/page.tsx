@@ -54,8 +54,9 @@ export default function AddPage() {
   }
 
   return (
-      <div className='flex flex-col w-[1000px] h-[700px] bg-white gap-2 p-10 border-1'>
-        <div className='text-4xl text-center m-15'>책 추가하기</div>
+      <div className='flex flex-col w-[1000px] h-[700px] gap-2 p-10 border-1'>
+        <div onClick={() => { router.push('/list') }}>{`목록으로`}</div>
+        <div className='text-4xl text-center m-10'>책 추가하기</div>
         <div className='flex flex-col gap-5'>
           <div className='text-2xl'>
             <span>제목: </span>
@@ -73,7 +74,6 @@ export default function AddPage() {
             <span>권수: </span>
             <input className='w-[400px] border-1' type="text" onChange={(e) => { setInputCount(parseInt(e.target.value)) }} />
           </div>
-
           <div className='text-2xl'>
             <div>내용: </div>
             <textarea className='w-full h-[150px] border-1' onChange={(e) => { setInputContent(e.target.value) }} />

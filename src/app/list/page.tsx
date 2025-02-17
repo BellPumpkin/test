@@ -114,7 +114,8 @@ export default function ListPage() {
             <th className='border-1 w-[150px]'>저자</th>
             <th className='border-1 w-[120px]'>가격</th>
             <th className='border-1 w-[100px]'>권 수</th>
-            <th className='border-1 w-[60px]'></th>
+            <th className='border-1 w-[40px]'>수정</th>
+            <th className='border-1 w-[40px]'>삭제</th>
           </tr>
         </thead>
         <tbody>
@@ -124,8 +125,12 @@ export default function ListPage() {
                 <td className='border-1 text-center'>{item.author}</td>
                 <td className='border-1 text-center'>{item.price.toLocaleString()}원</td>
                 <td className='border-1 text-center'>{item.count}</td>
-                <td className='border-1 text-center'><button onClick={() => { onClickDelete(item._id)
-                }}>x</button></td>
+                <td className='border-1 text-center'>
+                  <button onClick={() => { router.push(`/edit/${item._id}`) }}>o</button>
+                </td>
+                <td className='border-1 text-center'>
+                  <button onClick={() => { onClickDelete(item._id) }}>x</button>
+                </td>
               </tr>
             ))}
         </tbody>

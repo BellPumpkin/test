@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -24,11 +25,11 @@ const fetchBookDetail = async (id: string) => {
   return res.json();
 }
 
-const updateBook = async ({ _id, title, author, price, count }: { _id: string, title: string, author: string, price: number, count: number }) => {
+const updateBook = async ({ _id, title, content, author, price, count }: { _id: string, title: string, content: string, author: string, price: number, count: number }) => {
   const res = await fetch(`/api/books/${_id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title, author, price, count }),
+    body: JSON.stringify({ title, content, author, price, count }),
   });
   if (!res.ok) throw new Error('책 정보를 수정하는 데 실패했습니다.');
   return res.json();
@@ -36,6 +37,7 @@ const updateBook = async ({ _id, title, author, price, count }: { _id: string, t
 
 export default function EditPage({params}: Props) {
   const { id } = React.use(params);
+  const router = useRouter();
 
   const { data } = useQuery<BookProps, Error>({
     queryKey: ['bookDetail', id],
@@ -46,10 +48,9 @@ export default function EditPage({params}: Props) {
 
   const mutation = useMutation({
     mutationFn: updateBook,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({queryKey: ['book', id]}); // 데이터 갱신
-      console.log('수정 확인!', data);
-      
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['book', id]});
+      router.push(`/detail/${id}`)
     },
   });
 
@@ -73,32 +74,35 @@ export default function EditPage({params}: Props) {
 
   return (
     <>
-      <div className='flex w-full h-full justify-center pt-[100px]'>
-        <div className='flex flex-col w-[300px] h-[400px] bg-white gap-2'>
-          <div>책 추가하기</div>
-          <div>
+      <div className='flex flex-col w-[1000px] h-[700px] gap-2 p-10 border-1'>
+      <div onClick={() => { router.push('/list') }}>{`목록으로`}</div>
+        <div className='text-4xl text-center m-10'>책 수정하기</div>
+        <div className='flex flex-col gap-5'>
+          <div className='text-2xl'>
             <span>제목</span>
-            <input className='border-2' type="text" value={inputTitle} onChange={(e) => { setInputTitle(e.target.value) }} />
+            <input className='w-[400px] border-1' type="text" value={inputTitle} onChange={(e) => { setInputTitle(e.target.value) }} />
           </div>
-          <div>
-            <span>내용</span>
-            <input className='border-2' type="text" value={inputContent} onChange={(e) => { setInputContent(e.target.value) }} />
-          </div>
-          <div>
+          <div className='text-2xl'>
             <span>저자</span>
-            <input className='border-2' type="text" value={inputAuthor} onChange={(e) => { setInputAuthor(e.target.value) }} />
+            <input className='w-[400px] border-1' type="text" value={inputAuthor} onChange={(e) => { setInputAuthor(e.target.value) }} />
           </div>
-          <div>
+          <div className='text-2xl'>
             <span>가격</span>
-            <input className='border-2' type="text" value={inputPrice} onChange={(e) => { setInputPrice(parseInt(e.target.value)) }} />
+            <input className='w-[400px] border-1' type="text" value={inputPrice} onChange={(e) => { setInputPrice(parseInt(e.target.value)) }} />
           </div>
-          <div>
+          <div className='text-2xl'>
             <span>권수</span>
-            <input className='border-2' type="text" value={inputCount}  onChange={(e) => { setInputCount(parseInt(e.target.value)) }} />
+            <input className='w-[400px] border-1' type="text" value={inputCount}  onChange={(e) => { setInputCount(parseInt(e.target.value)) }} />
           </div>
-          <button className='border-2' onClick={() => mutation.mutate({ _id: input_Id, title: inputTitle, author: inputAuthor, price: inputPrice, count: inputCount })}>
-            추가하기
-          </button>
+          <div className='text-2xl'>
+            <div>내용: </div>
+            <textarea className='w-full h-[150px] border-1' value={inputContent}  onChange={(e) => { setInputContent(e.target.value) }} />
+          </div>
+          <div className='text-2xl'>
+            <button className='flex border-1' onClick={() => mutation.mutate({ _id: input_Id, title: inputTitle, content: inputContent, author: inputAuthor, price: inputPrice, count: inputCount })}>
+              추가하기
+            </button>
+          </div>
         </div>
       </div>
     </>
